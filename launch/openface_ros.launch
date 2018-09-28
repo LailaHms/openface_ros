@@ -1,24 +1,24 @@
 <launch>
-
-    <node pkg="openface_ros" type="executable_launcher.py" name="executable_launcher">
-  		<param name="pathOpenFace" value="/home/asselbor/catkin_ws/src/features_face/OpenFace" /> 
+  <arg name="video_device" default="1" />
+  <group ns="input_image">
+    <node pkg="usb_cam" name="img" type="usb_cam_node">
+    <!--
+        Change the value of the video index in "/dev/video1"
+        to access a different camera connected to your computer
+    -->
+      <param name="video_device" value="/dev/video$(arg video_device)"/>
     </node>
+  </group>
 
+  <group ns="openface_ros">
+    <node pkg="openface_ros" name="openface" type="openface_ros">
+        <param name="image_topic" value="/usb_cam/image_raw" type="str"/>
+    </node>
+  </group>
 
-	<node pkg="features_face" type="detect_gaze_match.py" name="detect_gaze_match">
-	  	
-	  	<param name="positionX1_r1" value="0.3" />
-		<param name="positionX2_r1" value="0.7" />
-		<param name="positionX1_r2" value="-0.3" />
-		<param name="positionX2_r2" value="-0.7" />
-		<param name="positionY1_r12" value="0.5" />
-		<param name="positionY2_r12" value="-0.6" />
-		<param name="positionX1_tab" value="-0.1" />
-		<param name="positionX2_tab" value="0.1" />
-		<param name="positionY_tab" value="0.2" />
-		<param name="topic_gaze_match" value="topic_gaze_match" />
-		<param name="topic_gaze" value="topic_gaze" />
-		
- 	 </node>
+  <group ns="logs">
+    <node pkg="openface_ros" name="faces_count" type="faces_subscriber.py"/>
+  </group>
+
 
 </launch>
