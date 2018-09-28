@@ -80,9 +80,10 @@ sudo apt-get install libboost-all-dev
 echo "Boost installed."
 
 # OpenFace installation
-echo "Installing OpenFace..."
+echo "Installing OpenFace and models..."
 git clone https://github.com/TadasBaltrusaitis/OpenFace.git
 cd OpenFace
+sudo ./download_models.sh
 mkdir -p build
 cd build
 cmake -D CMAKE_BUILD_TYPE=RELEASE ..
