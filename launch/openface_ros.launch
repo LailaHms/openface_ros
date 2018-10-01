@@ -1,24 +1,5 @@
 <launch>
-  <arg name="video_device" default="1" />
-  <group ns="input_image">
-    <node pkg="usb_cam" name="img" type="usb_cam_node">
-    <!--
-        Change the value of the video index in "/dev/video1"
-        to access a different camera connected to your computer
-    -->
-      <param name="video_device" value="/dev/video$(arg video_device)"/>
-    </node>
-  </group>
-
-  <group ns="openface_ros">
-    <node pkg="openface_ros" name="openface" type="openface_ros">
-        <param name="image_topic" value="/usb_cam/image_raw" type="str"/>
-    </node>
-  </group>
-
-  <group ns="logs">
-    <node pkg="openface_ros" name="faces_count" type="faces_subscriber.py"/>
-  </group>
-
-
+  <include file="$(find openface_ros)/launch/video.launch"/>
+  <include file="$(find openface_ros)/launch/openface.launch"/>
+  <include file="$(find openface_ros)/launch/logs.launch"/>
 </launch>

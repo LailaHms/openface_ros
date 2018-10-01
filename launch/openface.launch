@@ -1,0 +1,10 @@
+<launch>
+
+  <arg name="publish_viz" default="true" />
+
+  <node pkg="openface_ros" name="openface_ros" type="openface_ros">
+      <param name="usb_cam" value="/usb_cam/image_raw" type="str"/>
+      <param name="publish_viz" value="$(arg publish_viz)" type="bool"/>
+  </node>
+
+</launch>
