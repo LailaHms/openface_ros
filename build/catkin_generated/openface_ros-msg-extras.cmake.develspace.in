@@ -1,0 +1,2 @@
+set(openface_ros_MESSAGE_FILES "/home/chilirobot/catkin_ws/src/openface_ros/msg/ActionUnit.msg;/home/chilirobot/catkin_ws/src/openface_ros/msg/Face.msg;/home/chilirobot/catkin_ws/src/openface_ros/msg/Faces.msg")
+set(openface_ros_SERVICE_FILES "")
