@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(openface_ros)
 
-set(OPENFACE_ROOT_DIR ~/3rdparty/OpenFace)
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -27,13 +25,11 @@ find_library(OPENFACE_LD_LIB LandmarkDetector)
 find_library(OPENFACE_FA_LIB FaceAnalyser)
 find_library(OPENFACE_GA_LIB GazeAnalyser)
 find_library(OPENFACE_UT_LIB Utilities)
-find_library(DLIB_LIBRARY dlib ${OPENFACE_ROOT_DIR}/build/lib/3rdParty/dlib)
+find_library(DLIB_LIBRARY dlib)# ${OPENFACE_ROOT_DIR}/build/lib/3rdParty/dlib)
 
 set(OPENFACE_LIBS ${OPENFACE_LD_LIB} ${OPENFACE_FA_LIB} ${OPENFACE_GA_LIB} ${OPENFACE_UT_LIB})
 
 find_path(OPENFACE_INCLUDE_DIR LandmarkDetectorModel.h PATH_SUFFIXES OpenFace)
-
-set(DLIB_INCLUDE_DIR ${OPENFACE_ROOT_DIR}/lib/3rdParty/dlib/include)
 
 add_message_files(FILES ActionUnit.msg Face.msg Faces.msg)
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
