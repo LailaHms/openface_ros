@@ -4,6 +4,9 @@ project(openface_ros)
 set(OPENFACE_ROOT_DIR ~/3rdparty/OpenFace)
 
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
   message_generation
   message_runtime
   image_transport
@@ -30,13 +33,20 @@ set(OPENFACE_LIBS ${OPENFACE_LD_LIB} ${OPENFACE_FA_LIB} ${OPENFACE_GA_LIB} ${OPE
 
 find_path(OPENFACE_INCLUDE_DIR LandmarkDetectorModel.h PATH_SUFFIXES OpenFace)
 
-set(DLIB_INCLUDE_DIR ${OPENFACE_ROOT_DIR}/lib/3rdParty/dlib/include)	
+set(DLIB_INCLUDE_DIR ${OPENFACE_ROOT_DIR}/lib/3rdParty/dlib/include)
 
 add_message_files(FILES ActionUnit.msg Face.msg Faces.msg)
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
 
 add_definitions(-std=c++11)
 add_definitions(-g -pg)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS roscpp sensor_msgs std_msgs
+#  DEPENDS system_lib
+)
 
 include_directories(
   include

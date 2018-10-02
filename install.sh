@@ -5,6 +5,12 @@
 # catkin packages.
 #==============================================================================
 
+#Remove the build folder if it already exists
+sudo rm -R build
+
+# Export the python path, necessary to avoid issues with bad python package linking
+export PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages/
+
 # Exit script if any command fails
 set -e 
 set -o pipefail
@@ -16,7 +22,6 @@ if [ $# -ne 0 ]
 fi
 
 
-export PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages/
 mkdir build
 cd build
 cmake ..
