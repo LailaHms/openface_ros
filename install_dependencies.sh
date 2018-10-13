@@ -39,7 +39,7 @@ sudo apt-get -y install build-essential
 sudo apt-get -y install cmake
 sudo apt-get -y install libopenblas-dev liblapack-dev
 sudo apt-get -y install git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-sudo apt-get -y install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev
+sudo apt-get -y install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev python-scipy
 echo "Essential dependencies installed."
 
 # OpenCV Dependency
