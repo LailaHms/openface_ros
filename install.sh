@@ -5,10 +5,16 @@
 # catkin packages.
 #==============================================================================
 
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+
 #Remove the build folder if it already exists
 sudo rm -R build
 
 # Export the python path, necessary to avoid issues with bad python package linking
+
 export PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages/
 
 # Exit script if any command fails
@@ -21,6 +27,19 @@ if [ $# -ne 0 ]
     exit 1
 fi
 
+
+echo "-------------------------------------------------"
+echo -e "${RED}\n1. Install Dependencies${NC}\n"
+echo "-------------------------------------------------"
+
+
+chmod +x ./install_dependencies.sh
+sudo ./install_dependencies.sh
+
+
+echo "-------------------------------------------------"
+echo -e "${RED}\n1. Install The OpenFace Ros Wrappers${NC}\n"
+echo "-------------------------------------------------"
 
 mkdir build
 cd build
