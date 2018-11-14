@@ -28,6 +28,7 @@
 #include "openface_ros/ActionUnit.h"
 #include "openface_ros/Face.h"
 #include "openface_ros/Faces.h"
+#include "openface_ros/FacesWithImage.h"
 
 #include <sensor_msgs/Image.h>
 
@@ -141,6 +142,7 @@ namespace openface_ros
 
       camera_sub_ = it_.subscribeCamera(image_topic_, 1, &OpenFaceRos::process_incoming_, this);
       faces_pub_ = nh_.advertise<Faces>("faces", 1000);
+      faces_with_image_pub_ = nh_.advertise<FacesWithImage>("faces_with_image", 1000);
       if(publish_viz_) viz_pub_ = it_.advertise("openface/viz", 1);
       init_openface_();
     }
@@ -228,7 +230,6 @@ namespace openface_ros
       double cx = cam->K[2];
       double cy = cam->K[5];
 
-
       if(fx == 0 || fy == 0)
       {
         fx = 500.0 * cv_ptr_rgb->image.cols / 640.0;
@@ -302,7 +303,6 @@ namespace openface_ros
 							// Reinitialise the model
 							face_models[model].Reset();
 
-							// This ensures that a wider window is used for the initial landmark localisation
 							face_models[model].detection_success = false;
 							detection_success = LandmarkDetector::DetectLandmarksInVideo(cv_ptr_rgb->image, face_detections[detection_ind], face_models[model], det_parameters[model], cv_ptr_mono->image);
 
@@ -323,14 +323,16 @@ namespace openface_ros
 			}
 
       // Keeping track of FPS
-			fps_tracker.AddFrame();
+      fps_tracker.AddFrame();
 
       decltype(cv_ptr_rgb->image) viz_img = cv_ptr_rgb->image.clone();
       if(publish_viz_) visualizer.SetImage(viz_img, fx, fy, cx, cy);
 
       Faces faces;
+
+
       // Go through every model and detect eye gaze, record results and visualise the results
-			for (size_t model = 0; model < face_models.size(); ++model)
+      for (size_t model = 0; model < face_models.size(); ++model)
 			{
 				// Visualising and recording the results
 				if (active_models[model])
@@ -340,6 +342,7 @@ namespace openface_ros
           face.header.frame_id = img->header.frame_id;
           face.header.stamp = Time::now();
 
+	 
           // Estimate head pose and eye gaze				
 					cv::Vec6d head_pose = LandmarkDetector::GetPose(face_models[model], fx, fy, cx, cy);
           face.head_pose.position.x = head_pose[0];
@@ -507,6 +510,13 @@ namespace openface_ros
       }
 
       faces_pub_.publish(faces);
+      
+      FacesWithImage output;
+      output.header.frame_id = img->header.frame_id;
+      output.header.stamp = Time::now();
+      output.faces = faces;
+      output.img.data = cv_bridge::CvImage(img->header, "bgr8", cv_ptr_rgb->image.clone()).toImageMsg()->data;
+      faces_with_image_pub_.publish(output);
 
       if(publish_viz_)
       { 
@@ -540,7 +550,7 @@ namespace openface_ros
     NodeHandle nh_;
     image_transport::ImageTransport it_;
     image_transport::CameraSubscriber camera_sub_;
-    Publisher faces_pub_;
+    Publisher faces_pub_, faces_with_image_pub_;
 
     bool publish_viz_;
     image_transport::Publisher viz_pub_;

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(openface_ros)
 
+set(CMAKE_PREFIX_PATH "/opt/ros/kinetic")
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -31,8 +33,8 @@ set(OPENFACE_LIBS ${OPENFACE_LD_LIB} ${OPENFACE_FA_LIB} ${OPENFACE_GA_LIB} ${OPE
 
 find_path(OPENFACE_INCLUDE_DIR LandmarkDetectorModel.h PATH_SUFFIXES OpenFace)
 
-add_message_files(FILES ActionUnit.msg Face.msg Faces.msg)
-generate_messages(DEPENDENCIES std_msgs geometry_msgs)
+add_message_files(FILES ActionUnit.msg Face.msg Faces.msg FacesWithImage.msg)
+generate_messages(DEPENDENCIES std_msgs geometry_msgs sensor_msgs)
 
 add_definitions(-std=c++11)
 add_definitions(-g -pg)
