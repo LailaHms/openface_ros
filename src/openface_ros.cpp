@@ -278,49 +278,49 @@ namespace openface_ros
       vector<tbb::atomic<bool> > face_detections_used(face_detections.size());
 
       // Go through every model and update the tracking
-			for (unsigned int model = 0; model < face_models.size(); ++model)
-			{
+        for (unsigned int model = 0; model < face_models.size(); ++model)
+        {
 
-				bool detection_success = false;
+            bool detection_success = false;
 
-				// If the current model has failed more than 4 times in a row, remove it
-				if (face_models[model].failures_in_a_row > 4)
-				{
-					active_models[model] = false;
-					face_models[model].Reset();
-				}
+            // If the current model has failed more than 4 times in a row, remove it
+            if (face_models[model].failures_in_a_row > 4)
+            {
+                active_models[model] = false;
+                face_models[model].Reset();
+            }
 
-				// If the model is inactive reactivate it with new detections
-				if (!active_models[model])
-				{
+            // If the model is inactive reactivate it with new detections
+            if (!active_models[model])
+            {
 
-					for (size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
-					{
-						// if it was not taken by another tracker take it (if it is false swap it to true and enter detection, this makes it parallel safe)
-						if (face_detections_used[detection_ind].compare_and_swap(true, false) == false)
-						{
+                for (size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
+                {
+                    // if it was not taken by another tracker take it (if it is false swap it to true and enter detection, this makes it parallel safe)
+                    if (face_detections_used[detection_ind].compare_and_swap(true, false) == false)
+                    {
 
-							// Reinitialise the model
-							face_models[model].Reset();
+                        // Reinitialise the model
+                        face_models[model].Reset();
 
-							face_models[model].detection_success = false;
-							detection_success = LandmarkDetector::DetectLandmarksInVideo(cv_ptr_rgb->image, face_detections[detection_ind], face_models[model], det_parameters[model], cv_ptr_mono->image);
+                        face_models[model].detection_success = false;
+                        detection_success = LandmarkDetector::DetectLandmarksInVideo(cv_ptr_rgb->image, face_detections[detection_ind], face_models[model], det_parameters[model], cv_ptr_mono->image);
 
-							// This activates the model
-							active_models[model] = true;
+                        // This activates the model
+                        active_models[model] = true;
 
-							// break out of the loop as the tracker has been reinitialised
-							break;
-						}
+                        // break out of the loop as the tracker has been reinitialised
+                        break;
+                    }
 
-					}
-				}
-				else
-				{
-					// The actual facial landmark detection / tracking
-					detection_success = LandmarkDetector::DetectLandmarksInVideo(cv_ptr_rgb->image, face_models[model], det_parameters[model], cv_ptr_mono->image);
-				}
-			}
+                }
+            }
+            else
+            {
+                // The actual facial landmark detection / tracking
+                detection_success = LandmarkDetector::DetectLandmarksInVideo(cv_ptr_rgb->image, face_models[model], det_parameters[model], cv_ptr_mono->image);
+            }
+        }
 
       // Keeping track of FPS
       fps_tracker.AddFrame();
@@ -329,7 +329,6 @@ namespace openface_ros
       if(publish_viz_) visualizer.SetImage(viz_img, fx, fy, cx, cy);
 
       Faces faces;
-
 
       // Go through every model and detect eye gaze, record results and visualise the results
       for (size_t model = 0; model < face_models.size(); ++model)
@@ -369,7 +368,7 @@ namespace openface_ros
 					cv::Point3f gaze_direction0(0, 0, 0); cv::Point3f gaze_direction1(0, 0, 0); cv::Vec2d gaze_angle(0, 0);
 
           // Detect eye gazes
-					if (face_models[model].detection_success && face_models[model].eye_model)
+          if (face_models[model].detection_success && face_models[model].eye_model)
           {
             GazeAnalysis::EstimateGaze(face_models[model], gaze_direction0, fx, fy, cx, cy, true);
 						GazeAnalysis::EstimateGaze(face_models[model], gaze_direction1, fx, fy, cx, cy, false);
@@ -515,7 +514,14 @@ namespace openface_ros
       output.header.frame_id = img->header.frame_id;
       output.header.stamp = Time::now();
       output.faces = faces;
-      output.img.data = cv_bridge::CvImage(img->header, "bgr8", cv_ptr_rgb->image.clone()).toImageMsg()->data;
+      output.img.data = img->data;
+      output.img.encoding = img->encoding;
+      output.img.header = img->header;
+      output.img.height = img->height;
+      output.img.is_bigendian = img->is_bigendian;
+      output.img.step = img->step;
+      output.img.width = img->width;
+
       faces_with_image_pub_.publish(output);
 
       if(publish_viz_)
