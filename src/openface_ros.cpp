@@ -425,8 +425,8 @@ namespace openface_ros
           for(unsigned i = 0; i < face_models[model].pdm.NumberOfPoints(); ++i)
           {
             geometry_msgs::Point p;
-            p.x = landmarks.at<double>(i);
-            p.y = landmarks.at<double>(face_models[model].pdm.NumberOfPoints() + i);
+            p.x = landmarks.at<float>(i);
+            p.y = landmarks.at<float>(face_models[model].pdm.NumberOfPoints() + i);
             face.landmarks_2d.push_back(p);
           }
 
