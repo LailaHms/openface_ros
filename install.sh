@@ -32,7 +32,7 @@ echo "-------------------------------------------------"
 echo -e "${RED}\n1. Install Dependencies${NC}\n"
 echo "-------------------------------------------------"
 
-
+sudo apt install catkin
 chmod +x ./install_dependencies.sh
 sudo ./install_dependencies.sh
 

@@ -106,3 +106,16 @@ make
 sudo make install
 cd ../..
 echo -e "${CYAN}OpenFace successfully installed.${NC}"
+
+# install usb cam node and audio common for audio and video recordings
+cd ~/catkin_ws/src
+sudo apt-get install gstreamer1.0-libav
+sudo apt-get install libgstreamer1.0-0
+sudo apt-get install gstreamer1.0-plugins-base gstreamer1.0-plugins-good 
+sudo apt-get install gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly 
+sudo apt-get install gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools
+sudo apt-get install libgstreamer-plugins-base1.0-dev
+git clone https://github.com/ros-drivers/usb_cam.git
+git clone https://github.com/ros-drivers/audio_common.git
+cd ..
+catkin_make
